@@ -251,11 +251,26 @@ class Clock
     Color* bg;
 
 public:
+    Clock()
+    {
+        SetTime(0, 0, 0);
+        SetDisplay();
+    }
+
     Clock(int h, int m, int s = 0)
+    {
+        SetTime(h, m, s);
+    }
+
+    void SetTime(int h, int m, int s = 0)
     {
         hours = h;
         minutes = m;
         seconds = s;
+    }
+
+    void SetDisplay()
+    {
         fg = new Color(255, 255, 255);
         bg = new Color(0, 0, 0);
         cd = new ClockDisplay(fg, bg, 20, 20);
@@ -307,7 +322,7 @@ public:
 
 //ClockDisplay cd(&fg, &bg, 20, 20);
 int n = 0;
-Clock c(20, 15, 0);
+Clock c;
 
 void setup()
 {
@@ -321,6 +336,30 @@ void setup()
     myGLCD.setBackColor(0, 0, 255);
     myGLCD.print("Runtime: (msecs)", CENTER, 450);
     myGLCD.printNumI(millis(), CENTER, 465);
+
+/*
+    This was supposed to be the part where I set the clock trough the serial interface
+    unfortunatelly the serial interface triggers an restart of arduion (2560 included)
+    at connecting and disconnecting so even if the serial correctly sets the
+    time, after disconnecting the serial, arduino resets :-((
+    The solution seems a hardware one and for the moment I'm too lazy/scared to implement it.
+    https://playground.arduino.cc/Main/DisablingAutoResetOnSerialConnection
+
+    Serial.begin(9600);
+    while ( Serial.available() != 4 )
+    {
+        delay(1000);
+    }
+
+    unsigned char digit_h1 = Serial.read();
+    unsigned char digit_h2 = Serial.read();
+    unsigned char digit_m1 = Serial.read();
+    unsigned char digit_m2 = Serial.read();
+    int hh = (digit_h1 - '0') * 10 + (digit_h2 - '0');
+    int mm = (digit_m1 - '0') * 10 + (digit_m2 - '0');
+    c.SetTime(hh, mm, 0);
+*/
+    c.SetTime(16, 25, 0);
 
     //cd.SetTime( n, n, n, n, n, n);
 
